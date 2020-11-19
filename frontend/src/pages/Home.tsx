@@ -1,7 +1,12 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Button, Card, CardActions, CardContent, CardMedia, Grid, Typography } from "@material-ui/core";
 import { VideoData } from "../../type/type";
 import Spinner from "../components/Spinner";
+import io from "socket.io-client";
+
+
+// @ts-ignore
+const socket = io();
 
 type PropType = {
     loading: boolean
@@ -9,15 +14,18 @@ type PropType = {
 }
 
 const Home: React.FC<PropType> = ( {loading, data} ) => {
+    useEffect(() => {
+        socket.emit('video');
+    })
     if ( loading )
         return <Spinner/>
     return (
-        <Grid container spacing={2} direction="row"
-              justify="center"
+        <Grid container spacing={3} direction="row"
+              justify="flex-start"
               alignItems="flex-start"
         >
             {data.map(( el ) => (
-                <Grid key={el.video_name} item lg={4} md={4} sm={12}>
+                <Grid key={el.video_name} item lg={4} md={6} sm={12} xs={12}>
                     <Card>
                         <CardMedia
                             component="video"
@@ -36,14 +44,6 @@ const Home: React.FC<PropType> = ( {loading, data} ) => {
                                 across all continents except Antarctica
                             </Typography>
                         </CardContent>
-                        <CardActions>
-                            <Button size="small" color="primary">
-                                Share
-                            </Button>
-                            <Button size="small" color="primary">
-                                Learn More
-                            </Button>
-                        </CardActions>
                     </Card>
                 </Grid>
             ))}

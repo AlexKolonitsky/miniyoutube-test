@@ -14,11 +14,15 @@ const app = express();
 const server = http.createServer(app);
 
 app.use(express.json());
-app.use(cors());
+app.use( cors({
+    credentials: true,
+    origin: ["http://localhost:3000"],
+    optionsSuccessStatus: 200
+}));
 app.use(fileUpload());
 
 const port = process.env.PORT || 3000;
-const publicDirectoryPath = path.join(__dirname, '../frontend/media');
+const publicDirectoryPath = path.join(__dirname, '../../frontend/media');
 
 app.use(express.static(publicDirectoryPath));
 app.get('/video', async ( req: Request, res: any ) => {
@@ -28,7 +32,7 @@ app.get('/video', async ( req: Request, res: any ) => {
 
 app.post('/upload', ( req: any, res: Response ) => {
     const file = req.files.file;
-    file.mv(`${__dirname}/../frontend/public/video/${file.name}`, ( err: any ) => {
+    file.mv(`${__dirname}/../../frontend/public/video/${file.name}`, ( err: any ) => {
         if ( err ) {
             console.log(err);
             return res.status(500).send(err);
@@ -44,6 +48,8 @@ app.post('/upload', ( req: any, res: Response ) => {
     })
 });
 
+
+
 const getVideoData = () : Array<VideoData> => {
     const dataBuffer = fs.readFileSync('data.json');
     return JSON.parse(dataBuffer.toString());
@@ -52,10 +58,26 @@ const getVideoData = () : Array<VideoData> => {
 const io = require("socket.io")(server);
 
 io.on('connection', ( socket: any ) => {
-   socket.emit('sendMessage', (message: string) => {
-       console.log(message)
-   })
+    socket.emit('video', getVideoData());
+    socket.emit('upload', ( file: any ) => {
+        file.mv(`${__dirname}/../../frontend/public/video/${file.name}`, ( err: any ) => {
+            if ( err ) {
+                console.log(err);
+                throw new Error(err);
+            }
+            const dataJSON = getVideoData();
+            dataJSON.push({
+                video_name: file.name,
+                video_url: `/video/${file.name}`
+            });
+            const jsonData = JSON.stringify(dataJSON);
+            io.emit('video', jsonData)
+            fs.writeFileSync('data.json', jsonData);
 
+        })
+
+
+    })
 })
 server.listen(port, () => {
     console.log(`Server is up on ${port}`)

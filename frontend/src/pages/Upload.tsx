@@ -15,9 +15,8 @@ const Upload: React.FC<PropsType> = ( {localFile, fileDescription, fileTitle, on
 
 
     return (
-        <Grid container spacing={3} alignContent="center" justify="center" style={{height: "calc(100vh - 120px)"}}>
-            <Grid item lg={6} md={6} sm={12}>
-
+        <Grid container spacing={3} alignContent="center" justify="center">
+            <Grid item lg={6} md={6} sm={12} xs={12}>
                 <form onSubmit={onSubmit}>
                     <Box display="flex" flexDirection="column" alignItems="flex-start">
                         <TextField
@@ -56,7 +55,7 @@ const Upload: React.FC<PropsType> = ( {localFile, fileDescription, fileTitle, on
                     </Box>
                 </form>
             </Grid>
-            <Grid item lg={6} md={6} sm={12}>
+            <Grid item lg={6} md={6} sm={12} xs={12}>
                 <Card>
                     <CardMedia
                         component="video"

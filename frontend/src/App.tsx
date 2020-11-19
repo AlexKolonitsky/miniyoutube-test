@@ -17,7 +17,7 @@ const App = () => {
     return (
         <HashRouter>
             <Header/>
-            <Box ml={1} p={5}>
+            <Box ml={1} p={5} css={{minHeight: '100vh'}}>
                 <Switch>
                     <AppRoute/>
                 </Switch>
