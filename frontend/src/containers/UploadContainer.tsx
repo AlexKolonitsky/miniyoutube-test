@@ -17,16 +17,15 @@ const UploadContainer = () => {
         e.preventDefault();
         const formData = new FormData();
         formData.append('file', file);
-        // try {
-        //     const res = await axios.post('http://localhost:5000/upload', formData, {
-        //         headers: {
-        //             'Content-Type': 'multipart/form-data'
-        //         }
-        //     })
-        // } catch (e) {
-        //     console.log(e)
-        // }
-        socket.emit('upload' , formData)
+        try {
+            const res = await axios.post('http://localhost:5000/upload', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            })
+        } catch (e) {
+            console.log(e)
+        }
     }
 
     const handleFileChange = ({target: {files}}: any) => {
